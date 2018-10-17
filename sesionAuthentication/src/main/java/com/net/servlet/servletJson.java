@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
  */
 public class servletJson extends HttpServlet {
 
-     /**
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -48,7 +48,7 @@ public class servletJson extends HttpServlet {
         Gson gson = new Gson();
 
         try {
-            if (name != null || password != null) {
+            if (opcion != null) {
                 switch (opcion.trim()) {
                     case "login":
                         if (name.equals(usuarioR) && password.equals(contrase)) {
@@ -78,6 +78,7 @@ public class servletJson extends HttpServlet {
                         } else {
                             strJson = "{\"status\":401,\"msg\":\"Authentication error topsecret.\"}";
                         }
+                        break;
                     default:
                         response.setStatus(500);
                         strJson = "Ninguna opción es correcta.";
@@ -85,14 +86,13 @@ public class servletJson extends HttpServlet {
                 response.getWriter().append(gson.toJson(strJson));
 
             } else {
-                strJson = "{\"status\":200,\"msg\":\"OK\"}";
+                strJson = "{\"status\":200,\"msg\":\"" + opcion + "::" + name + "::" + password + "\"}";
                 response.getWriter().append(gson.toJson(strJson));
             }
         } finally {
             out.close();
         }
     }
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
