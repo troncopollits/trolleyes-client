@@ -8,7 +8,7 @@
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     </head>
     <body>
-        <div>
+        <div class="container">
             <div>
                 <form id="form">
                     <h1>Inicio sesión</h1>
@@ -24,11 +24,13 @@
                         <div id="errorPass"></div>
                     </div>
 
-                    <!--Botones-->
+                    <div id="contenedorBtn">
+                        <!--Botones-->
                     <input id="login" type="button" class="btn btn-primary" value="Login" name="login">
-                    <input id="logout" type="button" class="btn btn-primary" value="Logout" name="logout">
-                    <input id="check" type="button" class="btn btn-primary" value="Check" name="check">
-                    <input id="topsecret" type="button" class="btn btn-primary" value="Get Secret" name="topsecret">
+                    <input id="logout" type="button" class="btn btn-danger" value="Logout" name="logout">
+                    <input id="check" type="button" class="btn btn-success" value="Check" name="check">
+                    <input id="topsecret" type="button" class="btn btn-warning" value="Get Secret" name="topsecret">
+                    </div>
 
                 </form>
 
@@ -38,15 +40,35 @@
             </div>
         </div>
         <script>
-            $(document).ready(function () {
+            $(document).ready(function () { 
+                $("#form").show();
+                $("#contenedorBtn").show();
+                $.ajax({
+                    url:"/sesionAuthentication/servletJson?op=check",
+                    cache: false,
+                    dataType:"json",
+                    success: function(data){
+                        $("#form").show();
+                        $("#logout").show();
+                    },
+                    error:function(data){
+                        $("#form").show();
+                        $("#logout").show();
+                    },
+                });
                 $("#correct").hide();
                 $("#error").hide();
-
+                
                 $("#login").click(function () {
                     enviarPeticion("login");
+                    
+                    //$("#divUser").hide();
+                    //$("#divPass").hide();
                 });
                 $("#logout").click(function () {
                     enviarPeticion("logout");
+                    //$("#divUser").show();
+                    //$("#divPass").show();
                 });
                 $("#check").click(function () {
                     enviarPeticion("check");
@@ -57,24 +79,26 @@
 
                 //Llamada de la funcion
                 function enviarPeticion(valor) {
+                    
+                    var url;
                     switch (valor) {
                         case "login":
                             var user = $("#user").val();
                             var pass = $("#pass").val();
                             var op = "login";
-                            var url = "/sesionAuthentication/servletJson?op=" + op + "&user=" + user + "&pass=" + pass;
+                            url = "/sesionAuthentication/servletJson?op=" + op + "&user=" + user + "&pass=" + pass;
                             break;
                         case "logout":
                             var op = "logout";
-                            var url = "/sesionAuthentication/servletJson?op=" + op;
+                            url = "/sesionAuthentication/servletJson?op=" + op;
                             break;
                         case "check":
                             var op = "check";
-                            var url = "/sesionAuthentication/servletJson?op=" + op;
+                            url = "/sesionAuthentication/servletJson?op=" + op;
                             break;
                         case "topsecret":
                             var op = "topsecret";
-                            var url = "/sesionAuthentication/servletJson?op=" + op;
+                            url = "/sesionAuthentication/servletJson?op=" + op;
                             break;
                     }
 
@@ -88,15 +112,15 @@
                             var ob = JSON.parse(json_string);
                             var mensaje = ob.mensaje;
                             var status = ob.status;
-
+                            
                             if (status === 200) {
-                                $("#error").hide();
-                                $("#correct").show();
-                                $("#correct").empty().append(mensaje);
+                                $("#error").hide().empty();
+                                $("#correct").show().empty().append(mensaje);
+                                //$("#correct").empty().append(mensaje);
                             } else {
-                                $("#correct").hide();
-                                $("#error").show();
-                                $("#error").empty().append(mensaje);
+                                $("#correct").hide().empty();
+                                $("#error").show().empty().append(mensaje);
+                                //$("#error").empty().append(mensaje);
                             }
                         },
                         error: function (data) {
